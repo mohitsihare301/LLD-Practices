@@ -1,14 +1,14 @@
-package bookMyShow.models;
+package makeMyTrip.models;
 
-public class User {
+public class Airport {
     private String id;
     private String name;
-    private String email;
-    
-    public User(String id,String name,String email){
+    private City city;
+
+    public Airport(String id,String name,City city){
         this.id=id;
         this.name=name;
-        this.email=email;
+        this.city=city;
     }
 
     public String getId(){
@@ -19,7 +19,7 @@ public class User {
         return name;
     }
 
-    public String getEmail(){
-        return email;
+    public City getCity(){
+        return city;
     }
 }

@@ -1,11 +1,14 @@
-package bookMyShow.models;
+package makeMyTrip.models;
+
+import java.util.List;
 
 public class User {
     private String id;
     private String name;
     private String email;
-    
-    public User(String id,String name,String email){
+    private List<Booking>bookings;
+
+    public User(String id, String name, String email){
         this.id=id;
         this.name=name;
         this.email=email;
@@ -19,7 +22,7 @@ public class User {
         return name;
     }
 
-    public String getEmail(){
-        return email;
+    public List<Booking> getAllBookings(){
+        return bookings;
     }
 }
