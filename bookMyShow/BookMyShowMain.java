@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BookMyShowMain {
     public static void main(String[] args){
-        User user = new User(1, "Mohit","mohit@gmail.com");
+        User user = new User("U1", "Mohit","mohit@gmail.com");
 
         List<Seat> seats = List.of(
             new Seat("A","1",SeatType.GOLD,500),
