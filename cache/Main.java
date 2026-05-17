@@ -1,11 +1,12 @@
 package cache;
 
 import cache.services.Cache;
+import cache.services.LFUCache;
 import cache.services.LRUCache;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        Cache<String,Integer> cache = new LRUCache<>(3);
+        /*Cache<String,Integer> cache = new LRUCache<>(3);
         cache.put("A",5);
         System.out.println("get(A) = " + cache.get("A"));
         cache.put("B",10);
@@ -37,8 +38,32 @@ public class Main {
         t1.join();
         t2.join();
 
-
         System.out.println("Cache Size: " + cache.size());
+
+        */
+        
+
+
+
+
+
+
+        Cache<String,Integer> cache = new LFUCache<>(3);
+        cache.put("A",5);
+        System.out.println("get(A) = " + cache.get("A"));
+        cache.put("B",10);
+        System.out.println("get(B) = " + cache.get("B"));
+        cache.put("C",6);
+        System.out.println("get(C) = " + cache.get("C"));
+
+        cache.put("A",30);
+        System.out.println("get(A) = " + cache.get("A"));
+
+        cache.put("B",1);
+        System.out.println("get(B) = " + cache.get("B"));
+    
+        cache.put("D",8);
+        System.out.println("get(D) = "+ cache.get("D"));
 
 
     }

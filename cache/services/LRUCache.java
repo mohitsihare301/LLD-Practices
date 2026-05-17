@@ -9,7 +9,7 @@ import cache.models.Node;
 
 public class LRUCache<K,V> implements Cache<K,V> {
     private int capacity;
-    private Map<K, Node<K,V>> cache;
+    private Map<K, Node<K,V>> keyNodeMap;
     private DoublyLinkedList<K,V> list;
 
     private ReentrantLock lock = new ReentrantLock(true);
@@ -19,7 +19,7 @@ public class LRUCache<K,V> implements Cache<K,V> {
             throw new IllegalArgumentException("Capacity must be positive.");
         }
         this.capacity=capacity;
-        this.cache=new HashMap<>();
+        this.keyNodeMap=new HashMap<>();
         this.list=new DoublyLinkedList<>();
     }
 
@@ -27,10 +27,10 @@ public class LRUCache<K,V> implements Cache<K,V> {
     public V get(K key){
         lock.lock();
         try{
-            if(!cache.containsKey(key)){
+            if(!keyNodeMap.containsKey(key)){
                 return null;
             }
-            Node<K,V> node = cache.get(key);
+            Node<K,V> node = keyNodeMap.get(key);
             list.moveToHead(node);
             return node.value;
         } finally {
@@ -42,40 +42,33 @@ public class LRUCache<K,V> implements Cache<K,V> {
     public void put(K key, V value){
         lock.lock();
         try{
-            if(cache.containsKey(key)){
-                Node<K,V> node = cache.get(key);
+            if(keyNodeMap.containsKey(key)){
+                Node<K,V> node = keyNodeMap.get(key);
                 node.value=value;
                 list.moveToHead(node);
             }
             else{
-                Node<K,V> newNode = new Node<>(key, value);
-                cache.put(key, newNode);
-                list.addAtHead(newNode);
-                if(cache.size()>capacity){
+                if(keyNodeMap.size()>=capacity){
                     evictLRU();
                 }
+
+                Node<K,V> newNode = new Node<>(key, value);
+                keyNodeMap.put(key, newNode);
+                list.addAtHead(newNode);
             }
         } finally {
             lock.unlock();
         }
     }
 
-    private void evictLRU(){
-        Node<K,V> lru = list.removeTail();
-        if(lru!=null){
-            cache.remove(lru.key);
-        }
-        System.out.println("[LRU] Evicting LRU Key: " + lru.key);
-    }
-
     @Override
     public void remove(K key){
         lock.lock();
         try{
-            if(!cache.containsKey(key)){
+            if(!keyNodeMap.containsKey(key)){
                 return;
             }
-            Node<K,V> node = cache.remove(key);
+            Node<K,V> node = keyNodeMap.remove(key);
             list.removeNode(node);
         } finally {
             lock.unlock();
@@ -84,7 +77,15 @@ public class LRUCache<K,V> implements Cache<K,V> {
 
     @Override
     public int size(){
-        return cache.size();
+        return keyNodeMap.size();
+    }
+
+    private void evictLRU(){
+        Node<K,V> lru = list.removeTail();
+        if(lru!=null){
+            keyNodeMap.remove(lru.key);
+        }
+        System.out.println("[LRU] Evicting LRU Key: " + lru.key);
     }
 
 }
